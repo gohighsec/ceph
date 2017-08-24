@@ -99,7 +99,7 @@ int main(int argc, const char **argv)
     } else if (ceph_argparse_witharg(args, i, &val, "--cap", (char*)NULL)) {
       std::string my_key = val;
       if (i == args.end()) {
-	cerr << "must give two arguments to --cap: key and val." << std::endl;
+	cerr << "Must give two arguments to --cap: key and val." << std::endl;
 	exit(1);
       }
       std::string my_val = *i;
@@ -115,20 +115,20 @@ int main(int argc, const char **argv)
       std::string err;
       auid = strict_strtoll(val.c_str(), 10, &err);
       if (!err.empty()) {
-	cerr << "error parsing UID: " << err << std::endl;
+	cerr << "Error parsing UID: " << err << std::endl;
 	exit(1);
       }
       set_auid = true;
     } else if (fn.empty()) {
       fn = *i++;
     } else {
-      cerr << argv[0] << ": unexpected '" << *i << "'" << std::endl;
+      cerr << "Error" << argv[0] << ": unexpected '" << *i << "'" << std::endl;
       usage();
     }
   }
 
   if (fn.empty() && !gen_print_key) {
-    cerr << argv[0] << ": must specify filename" << std::endl;
+    cerr << "Error" << argv[0] << ": must specify filename" << std::endl;
     usage();
   }
   if (!(gen_key ||
@@ -141,11 +141,11 @@ int main(int argc, const char **argv)
 	print_key ||
 	create_keyring ||
 	!import_keyring.empty())) {
-    cerr << "no command specified" << std::endl;
+    cerr << "No command specified" << std::endl;
     usage();
   }
   if (gen_key && (!add_key.empty())) {
-    cerr << "can't both gen-key and add-key" << std::endl;
+    cerr << "Can't both gen-key and add-key" << std::endl;
     usage();
   }
 
@@ -155,7 +155,7 @@ int main(int argc, const char **argv)
   // Enforce the use of gen-key or add-key when creating to avoid ending up
   // with an "empty" key (key = AAAAAAAAAAAAAAAA)
   if (create_keyring && !gen_key && add_key.empty() && !caps.empty()) {
-    cerr << "must specify either gen-key or add-key when creating" << std::endl;
+    cerr << "Must specify either gen-key or add-key when creating" << std::endl;
     usage();
   }
 
@@ -183,11 +183,11 @@ int main(int argc, const char **argv)
 	bufferlist::iterator iter = bl.begin();
 	::decode(keyring, iter);
       } catch (const buffer::error &err) {
-	cerr << "error reading file " << fn << std::endl;
+	cerr << "Error reading file " << fn << std::endl;
 	exit(1);
       }
     } else {
-      cerr << "can't open " << fn << ": " << err << std::endl;
+      cerr << "Can't open " << fn << ": " << err << std::endl;
       exit(1);
     }
   }
@@ -197,7 +197,7 @@ int main(int argc, const char **argv)
   if (!gen_key && add_key.empty() && !caps.empty()) {
     CryptoKey key;
     if (!keyring.get_secret(ename, key)) {
-      cerr << "can't find existing key for " << ename 
+      cerr << "Can't find existing key for " << ename 
            << " and neither gen-key nor add-key specified" << std::endl;
       exit(1);
     }
@@ -214,16 +214,16 @@ int main(int argc, const char **argv)
 	bufferlist::iterator iter = obl.begin();
 	::decode(other, iter);
       } catch (const buffer::error &err) {
-	cerr << "error reading file " << import_keyring << std::endl;
+	cerr << "Error reading file " << import_keyring << std::endl;
 	exit(1);
       }
 
-      cout << "importing contents of " << import_keyring << " into " << fn << std::endl;
+      cout << "Importing contents of " << import_keyring << " into " << fn << std::endl;
       //other.print(cout);
       keyring.import(g_ceph_context, other);
       modified = true;
     } else {
-      cerr << "can't open " << import_keyring << ": " << err << std::endl;
+      cerr << "Can't open " << import_keyring << ": " << err << std::endl;
       exit(1);
     }
   }
@@ -238,7 +238,7 @@ int main(int argc, const char **argv)
     try {
       eauth.key.decode_base64(add_key);
     } catch (const buffer::error &err) {
-      cerr << "can't decode key '" << add_key << "'" << std::endl;
+      cerr << "Can't decode key '" << add_key << "'" << std::endl;
       exit(1);
     }
     keyring.add(ename, eauth);
